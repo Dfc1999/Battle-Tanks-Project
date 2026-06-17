@@ -1,0 +1,93 @@
+<div class="menu-container">
+    <div class="menu-scanline"></div>
+
+    <header class="menu-header">
+        <div class="title-row">
+            <i class="nes-logo"></i>
+            <h1 class="game-title">BATTLE TANKS</h1>
+            <i class="nes-logo"></i>
+        </div>
+        <p class="game-subtitle">MULTIPLAYER ARENA</p>
+    </header>
+
+    <div class="menu-content">
+        <div class="menu-left">
+            <section class="nes-container is-dark with-title player-card">
+                <p class="title"><i class="nes-icon star is-small"></i> PERFIL</p>
+                <div class="card-body">
+                    <div class="player-avatar">
+                        <i class="nes-ash"></i>
+                    </div>
+                    <div class="player-name">{{ username }}</div>
+                    <div class="player-stats">
+                        <div class="stat-row">
+                            <span class="stat-label"><i class="nes-icon coin is-small"></i> PUNTUACIÓN</span>
+                            <span class="stat-value gold">{{ totalScore }}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label"><i class="nes-icon like is-small"></i> PARTIDAS</span>
+                            <span class="stat-value">{{ gamesPlayed }}</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label"><i class="nes-icon trophy is-small"></i> VICTORIAS</span>
+                            <span class="stat-value green">{{ wins }}</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="menu-actions">
+                <button class="nes-btn is-primary btn-play" (click)="goToLobby()">
+                    <i class="nes-icon is-small star"></i> JUGAR
+                </button>
+                <button class="nes-btn is-error btn-logout" (click)="logout()">
+                    CERRAR SESIÓN
+                </button>
+            </div>
+        </div>
+
+        <div class="menu-right">
+            <section class="nes-container is-dark with-title leaderboard-card">
+                <p class="title"><i class="nes-icon trophy is-small"></i> TOP 10</p>
+                <div class="card-body">
+                    @if (isLoadingLeaderboard()) {
+                    <div class="loading-text">
+                        <progress class="nes-progress is-primary" value="70" max="100"></progress>
+                        <p>Cargando...</p>
+                    </div>
+                    } @else if (leaderboard().length === 0) {
+                    <div class="empty-text">Sin datos aún</div>
+                    } @else {
+                    <div class="leaderboard-list">
+                        @for (entry of leaderboard(); track entry.rank) {
+                        <div class="leaderboard-row" [class.top-3]="entry.rank <= 3">
+                            <span class="lb-rank">
+                                @if (entry.rank === 1) {
+                                <i class="nes-icon trophy is-small"></i>
+                                }
+                                @else if (entry.rank === 2) {
+                                <i class="nes-icon star is-small"></i>
+                                }
+                                @else if (entry.rank === 3) {
+                                <i class="nes-icon heart is-small"></i>
+                                }
+                                @else { #{{ entry.rank }} }
+                            </span>
+                            <span class="lb-name">{{ entry.playerName }}</span>
+                            <span class="lb-score">
+                                <i class="nes-icon coin is-small"></i>
+                                {{ entry.points }}
+                            </span>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <footer class="menu-footer">
+        <span>Battle Tanks Capstone © 2026</span>
+    </footer>
+</div>

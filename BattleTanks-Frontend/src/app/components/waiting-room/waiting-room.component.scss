@@ -1,0 +1,433 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$bg-dark: #0a0e14;
+$bg-panel: #141e28;
+$bg-panel-light: #1c2a38;
+$bg-input: #0a1218;
+$border-color: #2a4a3a;
+$border-light: #3d7a5a;
+$text-primary: #c8e6c9;
+$text-secondary: #a5d6a7;
+$text-gold: #ffd700;
+$accent: #66bb6a;
+$danger: #f44336;
+$warning: #ffc107;
+$glow: #00e5ff;
+$transition-speed: 0.2s;
+
+@mixin pixel-text {
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+}
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.waiting-room-container {
+    min-height: 100vh;
+    background: $bg-dark;
+    background-image:
+        linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Press Start 2P', monospace;
+
+    .header {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 15px 20px;
+        color: $text-primary;
+        border-bottom: 3px solid $border-color;
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            h1 {
+                @include pixel-text;
+                font-size: 1.2rem;
+                margin: 0;
+                color: $text-gold;
+            }
+
+            .room-info {
+                margin: 0;
+                font-size: 0.7rem;
+                display: flex;
+                gap: 12px;
+
+                .room-name {
+                    @include pixel-text;
+                    font-size: 0.7rem;
+                    color: $text-primary;
+                }
+
+                .room-id {
+                    @include pixel-text;
+                    font-size: 0.6rem;
+                    color: $text-secondary;
+                    opacity: 0.7;
+                }
+            }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .user-badge {
+                @include pixel-text;
+                font-size: 0.7rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(0, 0, 0, 0.3);
+                padding: 6px 12px;
+                border: 2px solid $border-color;
+            }
+
+            .btn-leave {
+                font-size: 9px;
+                padding: 8px 14px;
+            }
+        }
+    }
+
+    .error-banner {
+        max-width: 1400px;
+        margin: 10px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 12px !important;
+        border-color: $danger !important;
+    }
+
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+
+        @media (max-width: 1024px) {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+.players-panel {
+    .player-count-bar {
+        margin-bottom: 16px;
+    }
+
+    .players-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .player-card {
+            display: flex;
+            align-items: center;
+            padding: 12px !important;
+            transition: all $transition-speed ease;
+
+            &.current {
+                border-color: $glow !important;
+                box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+            }
+
+            &.ready {
+                border-color: $accent !important;
+                box-shadow: 0 0 10px rgba(102, 187, 106, 0.15);
+            }
+
+            &.empty {
+                opacity: 0.4;
+                border-style: dashed;
+            }
+
+            .player-avatar {
+                font-size: 1.5rem;
+                margin-right: 12px;
+                width: 50px;
+                height: 50px;
+                @include flex-center;
+                overflow: hidden;
+
+                .avatar-tank-sprite {
+                    width: 40px;
+                    height: 40px;
+                    object-fit: contain;
+                    image-rendering: pixelated;
+                }
+            }
+
+            .player-info {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                gap: 4px;
+
+                .player-name {
+                    @include pixel-text;
+                    font-size: 0.8rem;
+                    color: $text-primary;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    .nes-badge span {
+                        font-size: 6px;
+                    }
+                }
+
+                .player-status {
+                    @include pixel-text;
+                    font-size: 0.65rem;
+                    color: $text-secondary;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+
+                    &.is-ready {
+                        color: $accent;
+                    }
+                }
+
+                .player-tank-name {
+                    @include pixel-text;
+                    font-size: 0.6rem;
+                    color: $text-secondary;
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+
+    .tank-selection {
+        margin-bottom: 20px;
+
+        h3 {
+            @include pixel-text;
+            margin: 0 0 12px 0;
+            color: $text-gold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tank-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .tank-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px !important;
+            cursor: pointer;
+            transition: all $transition-speed ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                border-color: $glow !important;
+                box-shadow: 0 4px 12px rgba(0, 229, 255, 0.15);
+            }
+
+            &.selected {
+                border-color: $accent !important;
+                box-shadow: 0 0 15px rgba(102, 187, 106, 0.25);
+            }
+
+            .tank-sprite {
+                width: 64px;
+                height: 64px;
+                object-fit: contain;
+                margin-bottom: 8px;
+                image-rendering: pixelated;
+                transition: transform $transition-speed ease;
+            }
+
+            &:hover .tank-sprite {
+                transform: scale(1.1);
+            }
+
+            .tank-info {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+
+                .tank-name {
+                    @include pixel-text;
+                    font-size: 0.7rem;
+                    color: $text-primary;
+                }
+
+                .tank-desc {
+                    @include pixel-text;
+                    font-size: 0.55rem;
+                    color: $text-secondary;
+                    margin-top: 4px;
+                }
+            }
+
+            .selected-badge {
+                position: absolute;
+                top: 4px;
+                right: 4px;
+            }
+        }
+    }
+
+    .ready-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .nes-btn {
+            padding: 14px 20px;
+            font-size: 11px;
+        }
+
+        .btn-start {
+            animation: pulse 2s infinite;
+        }
+    }
+}
+
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    max-height: 700px;
+
+    @media (max-width: 1024px) {
+        max-height: 400px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid $border-color;
+        margin-bottom: 12px;
+        max-height: 450px;
+
+        .no-messages {
+            @include flex-center;
+            flex-direction: column;
+            height: 100%;
+            min-height: 200px;
+            color: $text-secondary;
+            text-align: center;
+            gap: 16px;
+
+            p {
+                @include pixel-text;
+                font-size: 8px;
+            }
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+
+            .message-bubble {
+                &.msg-right {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+            }
+
+            .nes-balloon {
+                max-width: 85%;
+                background-color: $bg-panel-light !important;
+
+                .message-author {
+                    @include pixel-text;
+                    font-size: 7px;
+                    color: $text-gold;
+                    display: block;
+                    margin-bottom: 4px;
+                }
+
+                .message-text {
+                    font-family: 'Press Start 2P', monospace;
+                    font-size: 8px;
+                    color: $text-primary;
+                    word-wrap: break-word;
+                    display: block;
+                }
+
+                .message-time {
+                    @include pixel-text;
+                    font-size: 6px;
+                    color: $text-secondary;
+                    display: block;
+                    text-align: right;
+                    margin-top: 4px;
+                    opacity: 0.6;
+                }
+            }
+
+            &.system .nes-balloon {
+                background-color: rgba($warning, 0.15) !important;
+                border-color: $warning;
+            }
+
+            &.own .nes-balloon {
+                background-color: rgba($glow, 0.1) !important;
+                border-color: rgba($glow, 0.3);
+            }
+        }
+    }
+
+    .chat-input {
+        display: flex;
+        gap: 10px;
+
+        .nes-input {
+            flex: 1;
+            font-size: 9px;
+        }
+
+        .nes-btn {
+            font-size: 9px;
+            padding: 8px 16px;
+            flex-shrink: 0;
+        }
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+    }
+}

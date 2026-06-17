@@ -1,0 +1,58 @@
+config:
+  target: "http://localhost:5013"
+  phases:
+    - duration: 10
+      arrivalRate: 5
+      name: "Warm-up"
+    - duration: 20
+      arrivalRate: 10
+      name: "Ramp-up"
+    - duration: 10
+      arrivalRate: 20
+      name: "Peak Load"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+  ensure:
+    p95: 500
+    maxErrorRate: 10
+
+scenarios:
+  - name: "Test API Players"
+    flow:
+      - get:
+          url: "/api/Players"
+          expect:
+            - statusCode: 200
+
+      - think: 1
+
+      - get:
+          url: "/api/Scores"
+          expect:
+            - statusCode: 200
+
+      - think: 1
+
+      - get:
+          url: "/api/Benchmark/run"
+          expect:
+            - statusCode: 200
+
+      - think: 1
+
+  - name: "Test Game Sessions"
+    flow:
+      - get:
+          url: "/api/GameSessions"
+          expect:
+            - statusCode: 200
+
+      - think: 1
+
+      - get:
+          url: "/api/Rooms"
+          expect:
+            - statusCode: 200
+
+      - think: 1

@@ -1,0 +1,160 @@
+<div class="waiting-room-container">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <i class="nes-logo"></i>
+        <h1>Battle Tanks - Sala de Espera</h1>
+        @if (currentRoom) {
+        <p class="room-info">
+          <span class="room-name">{{ currentRoom.name }}</span>
+          <span class="room-id">ID: {{ roomId }}</span>
+        </p>
+        }
+      </div>
+      <div class="header-right">
+        @if (authService.currentUser()) {
+        <span class="user-badge">
+          <i class="nes-ash" style="transform: scale(0.5);"></i>
+          {{ authService.currentUser()?.username }}
+        </span>
+        }
+        <button class="nes-btn is-error btn-leave" (click)="leaveRoom()">
+          Salir de Sala
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+  <div class="nes-container is-rounded error-banner">
+    <span class="nes-text is-error">❌ {{ errorMessage }}</span>
+    <button class="nes-btn is-warning" routerLink="/lobby">← Volver al Lobby</button>
+  </div>
+  }
+
+  <div class="main-content">
+    <div class="nes-container is-dark with-title players-panel">
+      <p class="title"><i class="nes-icon star is-small"></i> Jugadores ({{ store.players().length }}/{{
+        currentRoom?.maxPlayers || 4 }})</p>
+
+      <div class="player-count-bar">
+        <progress class="nes-progress is-primary" [value]="store.players().length"
+          [max]="currentRoom?.maxPlayers || 4"></progress>
+      </div>
+
+      <div class="players-list">
+        @for (player of store.players(); track player.id) {
+        <div class="nes-container is-dark is-rounded player-card" [class.ready]="player.isReady"
+          [class.current]="player.id === currentPlayer.id">
+
+          <div class="player-avatar">
+            @if (getTankType(player.id)) {
+            <img [src]="getTankType(player.id)!.spriteUrl" [alt]="getTankType(player.id)!.name"
+              class="avatar-tank-sprite">
+            } @else {
+            <i class="nes-kirby"></i>
+            }
+          </div>
+
+          <div class="player-info">
+            <span class="player-name">
+              {{ player.name }}
+              @if (player.id === currentPlayer.id) {
+              <a class="nes-badge is-splited"><span class="is-primary">TÚ</span></a>
+              }
+            </span>
+            <span class="player-status" [class.is-ready]="player.isReady">
+              @if (player.isReady) {
+              <i class="nes-icon is-small heart"></i> Listo
+              } @else {
+              <i class="nes-icon is-small star is-half"></i> Esperando...
+              }
+            </span>
+            <span class="player-tank-name">
+              🎯 {{ getTankType(player.id)?.name || 'E-100' }}
+            </span>
+          </div>
+        </div>
+        }
+
+        @for (slot of emptySlots; track $index) {
+        <div class="nes-container is-dark is-rounded player-card empty">
+          <div class="player-avatar"><i class="nes-icon is-medium star is-empty"></i></div>
+          <div class="player-info">
+            <span class="player-name">Esperando jugador...</span>
+          </div>
+        </div>
+        }
+      </div>
+
+      <div class="tank-selection">
+        <h3><i class="nes-icon trophy is-small"></i> Elige tu Tanque</h3>
+        <div class="tank-grid">
+          @for (tank of tankTypes; track tank.id) {
+          <div class="nes-container is-dark is-rounded tank-card" [class.selected]="selectedTankId === tank.id"
+            (click)="selectTank(tank.id)">
+            <img [src]="tank.spriteUrl" [alt]="tank.name" class="tank-sprite">
+            <div class="tank-info">
+              <span class="tank-name">{{ tank.name }}</span>
+              <span class="tank-desc">{{ tank.description }}</span>
+            </div>
+            @if (selectedTankId === tank.id) {
+            <div class="selected-badge"><i class="nes-icon is-small heart"></i></div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="ready-section">
+        <button class="nes-btn" [class.is-error]="currentPlayer.isReady"
+          [class.is-success]="!currentPlayer.isReady" (click)="toggleReady()">
+          {{ currentPlayer.isReady ? '❌ Cancelar' : '✅ ¡Estoy Listo!' }}
+        </button>
+
+        @if (allPlayersReady) {
+        <button class="nes-btn is-primary btn-start" (click)="startGame()">
+          🚀 Iniciar Partida
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="nes-container is-dark with-title chat-panel">
+      <p class="title">💬 Chat</p>
+
+      <div class="chat-messages">
+        @if (chatStore.messages().length === 0) {
+        <div class="no-messages">
+          <i class="nes-icon is-large like is-empty"></i>
+          <p>No hay mensajes aún. ¡Sé el primero en escribir!</p>
+        </div>
+        } @else {
+        @for (msg of chatStore.messages(); track $index) {
+        <div class="chat-message" [class.system]="msg.playerId === 'system'"
+          [class.own]="msg.playerId === currentPlayer.id">
+
+          <section class="message-bubble" [class.msg-right]="msg.playerId === currentPlayer.id">
+            <div class="nes-balloon" [class.from-left]="msg.playerId !== currentPlayer.id"
+              [class.from-right]="msg.playerId === currentPlayer.id" [class.is-dark]="true">
+              <span class="message-author">{{ msg.playerName }}:</span>
+              <span class="message-text">{{ msg.message }}</span>
+              <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+            </div>
+          </section>
+        </div>
+        }
+        }
+      </div>
+
+      <div class="chat-input">
+        <input type="text" class="nes-input is-dark" [(ngModel)]="newMessage" (keyup.enter)="sendMessage()"
+          placeholder="Escribe un mensaje..." maxlength="200">
+
+        <button class="nes-btn is-primary" (click)="sendMessage()" [disabled]="!newMessage.trim()">
+          Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

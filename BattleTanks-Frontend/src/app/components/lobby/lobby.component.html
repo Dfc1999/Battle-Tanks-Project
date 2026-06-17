@@ -1,0 +1,193 @@
+<div class="lobby-container">
+    <header class="lobby-header">
+        <div class="header-left">
+            <i class="nes-logo"></i>
+            <h1>Battle Tanks</h1>
+            <span class="subtitle">Lobby de Salas</span>
+        </div>
+        <div class="header-right">
+            @if (authService.currentUser()) {
+            <div class="user-info">
+                <i class="nes-ash" style="transform: scale(0.6);"></i>
+                <span class="username">{{ authService.currentUser()?.username }}</span>
+            </div>
+            }
+            <button class="nes-btn is-error btn-logout" (click)="logout()">
+                Salir
+            </button>
+        </div>
+    </header>
+
+    <div class="lobby-content">
+        <section class="nes-container is-dark with-title rooms-panel">
+            <p class="title">📋 Salas Disponibles</p>
+            <div class="panel-header-actions">
+                <button class="nes-btn is-warning btn-sm" (click)="refreshRooms()" [disabled]="roomService.isLoading()">
+                    🔄 Actualizar
+                </button>
+                <button class="nes-btn is-primary btn-sm" (click)="toggleCreateForm()">
+                    {{ showCreateForm() ? '❌ Cancelar' : '➕ Nueva Sala' }}
+                </button>
+            </div>
+
+            @if (showCreateForm()) {
+            <div class="nes-container is-dark is-rounded create-room-form">
+                <h3>Crear Nueva Sala</h3>
+                <form (ngSubmit)="createRoom()">
+                    <div class="nes-field">
+                        <label for="room-name">Nombre de la sala *</label>
+                        <input type="text" id="room-name" class="nes-input is-dark" [(ngModel)]="createRoomForm.name"
+                            name="name" placeholder="Mi sala de batalla" required maxlength="100">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="nes-field">
+                            <label for="room-map">Mapa</label>
+                            <div class="nes-select is-dark">
+                                <select id="room-map" [(ngModel)]="createRoomForm.selectedMap" name="selectedMap"
+                                    required>
+                                    @for (map of availableMaps; track map.id) {
+                                    <option [value]="map.id">{{ map.name }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="nes-field">
+                            <label for="room-players">Máx. Jugadores</label>
+                            <div class="nes-select is-dark">
+                                <select id="room-players" [(ngModel)]="createRoomForm.maxPlayers" name="maxPlayers"
+                                    required>
+                                    <option [value]="2">2 jugadores</option>
+                                    <option [value]="3">3 jugadores</option>
+                                    <option [value]="4">4 jugadores</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="nes-btn is-success btn-create-submit"
+                        [disabled]="roomService.isLoading() || !createRoomForm.name.trim()">
+                        @if (roomService.isLoading()) {
+                        <span class="spinner"></span> Creando...
+                        } @else {
+                        Crear Sala
+                        }
+                    </button>
+                </form>
+            </div>
+            }
+
+            @if (roomService.error()) {
+            <div class="nes-container is-rounded error-message">
+                <span class="nes-text is-error">❌ {{ roomService.error() }}</span>
+            </div>
+            }
+
+            @if (roomService.isLoading() && !showCreateForm()) {
+            <div class="loading-state">
+                <progress class="nes-progress is-primary" value="60" max="100"></progress>
+                <p>Cargando salas...</p>
+            </div>
+            }
+
+            @if (!roomService.isLoading() || showCreateForm()) {
+            <div class="rooms-list">
+                @if (activeRooms().length === 0) {
+                <div class="empty-state">
+                    <i class="nes-icon is-large star is-empty"></i>
+                    <p>No hay salas disponibles</p>
+                    <p class="hint">¡Crea la primera sala!</p>
+                </div>
+                } @else {
+                @for (room of activeRooms(); track room.id) {
+                <div class="nes-container is-dark is-rounded room-card"
+                    [class.selected]="selectedRoom()?.id === room.id"
+                    [class.full]="room.currentPlayers >= room.maxPlayers" (click)="selectRoom(room)">
+
+                    <div class="room-info">
+                        <h3 class="room-name">{{ room.name }}</h3>
+                        <div class="room-meta">
+                            <span class="room-map">🗺️ {{ room.selectedMap }}</span>
+                            <span class="room-date">{{ room.createdAt | date:'HH:mm' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="room-stats">
+                        <a class="nes-badge">
+                            <span [class]="'is-' + getStatusBadgeClass(room.status)">
+                                {{ getStatusLabel(room.status) }}
+                            </span>
+                        </a>
+                        <span class="room-players" [class.full]="room.currentPlayers >= room.maxPlayers">
+                            👥 {{ room.currentPlayers }}/{{ room.maxPlayers }}
+                        </span>
+                    </div>
+
+                    <button class="nes-btn is-primary btn-join"
+                        (click)="joinRoom(room); $event.stopPropagation()"
+                        [disabled]="room.currentPlayers >= room.maxPlayers || room.status.toLowerCase() !== 'waiting'">
+                        @if (room.currentPlayers >= room.maxPlayers) {
+                        🚫 Llena
+                        } @else if (room.status.toLowerCase() !== 'waiting') {
+                        ⏳ En curso
+                        } @else {
+                        ➡️ Unirse
+                        }
+                    </button>
+                </div>
+                }
+                }
+            </div>
+            }
+        </section>
+
+        @if (selectedRoom()) {
+        <aside class="nes-container is-dark with-title details-panel">
+            <p class="title">Detalles de la Sala</p>
+
+            <div class="detail-card">
+                <h3>{{ selectedRoom()?.name }}</h3>
+
+                <div class="detail-row">
+                    <span class="label">Estado:</span>
+                    <span class="value" [class]="getStatusClass(selectedRoom()!.status)">
+                        {{ getStatusLabel(selectedRoom()!.status) }}
+                    </span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="label">Mapa:</span>
+                    <span class="value">{{ selectedRoom()?.selectedMap }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="label">Jugadores:</span>
+                    <span class="value">{{ selectedRoom()?.currentPlayers }}/{{ selectedRoom()?.maxPlayers }}</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="label">Creada:</span>
+                    <span class="value">{{ selectedRoom()?.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+
+                @if (selectedRoom()!.players && selectedRoom()!.players.length > 0) {
+                <div class="players-section">
+                    <h4>Jugadores en sala:</h4>
+                    <ul class="nes-list is-disc">
+                        @for (player of selectedRoom()!.players; track player.playerId) {
+                        <li>{{ player.username }}</li>
+                        }
+                    </ul>
+                </div>
+                }
+
+                <button class="nes-btn is-success btn-join-large" (click)="joinRoom(selectedRoom()!)"
+                    [disabled]="selectedRoom()!.currentPlayers >= selectedRoom()!.maxPlayers">
+                    🎮 Unirse a la Partida
+                </button>
+            </div>
+        </aside>
+        }
+    </div>
+</div>

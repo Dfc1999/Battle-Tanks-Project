@@ -1,0 +1,5 @@
+
+# Credenciales / secretos (NO subir)
+*firebase-adminsdk*.json
+*service-account*.json
+appsettings.*.Local.json

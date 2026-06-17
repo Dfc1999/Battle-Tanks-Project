@@ -1,0 +1,140 @@
+/* ── Global Styles & NES.css Dark Mode Overrides ── */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0e14;
+  color: #c8e6c9;
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* ── NES.css Dark Mode Overrides ── */
+
+/* Containers */
+.nes-container.is-dark {
+  background-color: #141e28 !important;
+  color: #c8e6c9 !important;
+  border-color: #2a4a3a;
+
+  &.with-title > .title {
+    background-color: #0a0e14 !important;
+    color: #ffd700 !important;
+  }
+
+  p, span, div {
+    color: #c8e6c9;
+  }
+}
+
+/* Inputs */
+.nes-input.is-dark,
+.nes-textarea.is-dark {
+  background-color: #0a1218 !important;
+  color: #c8e6c9 !important;
+  border-color: #2a4a3a;
+
+  &::placeholder {
+    color: #66bb6a;
+  }
+
+  &:focus {
+    border-color: #3d7a5a;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.25);
+  }
+}
+
+/* Selects */
+.nes-select.is-dark select {
+  background-color: #0a1218 !important;
+  color: #c8e6c9 !important;
+  border-color: #2a4a3a;
+}
+
+/* Buttons - dark mode overrides */
+.nes-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+}
+
+/* Dialog */
+.nes-dialog.is-dark {
+  background-color: #141e28 !important;
+  color: #c8e6c9 !important;
+
+  .title {
+    color: #ffd700 !important;
+  }
+}
+
+/* Tables */
+.nes-table.is-dark {
+  color: #c8e6c9;
+
+  th {
+    color: #ffd700;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  td {
+    border-color: #2a4a3a;
+  }
+
+  tr:hover td {
+    background-color: rgba(0, 229, 255, 0.05);
+  }
+}
+
+/* Balloons */
+.nes-balloon.is-dark {
+  background-color: #1c2a38 !important;
+  color: #c8e6c9 !important;
+
+  &::before,
+  &::after {
+    color: #1c2a38 !important;
+  }
+}
+
+/* Progress */
+.nes-progress {
+  height: 20px;
+}
+
+/* Badges */
+.nes-badge span {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+}
+
+/* Lists */
+.nes-list {
+  color: #c8e6c9;
+}
+
+/* Icons */
+.nes-icon {
+  display: inline-block;
+}
+
+/* Scrollbar styling for retro feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a4a3a;
+  border: 1px solid #3d7a5a;
+
+  &:hover {
+    background: #3d7a5a;
+  }
+}

@@ -1,0 +1,156 @@
+@import '../../../styles/retro-theme';
+
+.auth-container {
+  @include retro-container;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(0, 229, 255, 0.08);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  animation: float-in 0.6s ease-out;
+
+  .auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    .title-icons {
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      @include pixel-text;
+      font-size: 22px;
+      color: $color-text-gold;
+      margin: 0 0 10px 0;
+      animation: glow-pulse 3s infinite;
+    }
+
+    .subtitle {
+      @include pixel-text;
+      font-size: 8px;
+      color: $color-text-secondary;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+  }
+}
+
+.message-box {
+  margin-bottom: 20px;
+  padding: 10px 15px !important;
+
+  &.success-box {
+    border-color: $color-accent !important;
+  }
+
+  &.error-box {
+    border-color: $color-danger !important;
+  }
+
+  .nes-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nes-field {
+    label {
+      @include pixel-text;
+      font-size: 8px;
+      color: $color-text-secondary;
+      margin-bottom: 6px;
+      display: block;
+    }
+  }
+
+  .hint {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .btn-submit {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 24px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba($color-text-primary, 0.3);
+  border-top-color: $color-text-primary;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 2px solid $color-border;
+
+  p {
+    @include pixel-text;
+    font-size: 8px;
+    color: $color-text-secondary;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-link {
+    font-size: 8px;
+    padding: 6px 12px;
+  }
+}

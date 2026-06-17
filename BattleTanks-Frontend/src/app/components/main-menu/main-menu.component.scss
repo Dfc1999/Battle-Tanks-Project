@@ -1,0 +1,264 @@
+@import '../../../styles/retro-theme';
+
+.menu-container {
+    @include retro-container;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0, 229, 255, 0.08);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: float-in 0.6s ease-out;
+
+    .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+
+    .game-title {
+        @include pixel-text;
+        font-size: 28px;
+        color: $color-text-gold;
+        margin: 0;
+        animation: glow-pulse 3s infinite;
+    }
+
+    .game-subtitle {
+        @include pixel-text;
+        font-size: 10px;
+        color: $color-text-secondary;
+        margin: 0;
+        letter-spacing: 4px;
+    }
+}
+
+.menu-content {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    max-width: 900px;
+    animation: float-in 0.8s ease-out;
+}
+
+.menu-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu-right {
+    flex: 1;
+}
+
+.player-card {
+    .card-body {
+        padding: 10px 0 0 0;
+    }
+
+    .player-avatar {
+        text-align: center;
+        margin-bottom: 12px;
+        transform: scale(1.5);
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .player-name {
+        @include pixel-text;
+        text-align: center;
+        font-size: 14px;
+        color: $color-text-gold;
+        margin-bottom: 16px;
+    }
+
+    .player-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid $color-border;
+
+            .stat-label {
+                @include pixel-text;
+                font-size: 8px;
+                color: $color-text-secondary;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .stat-value {
+                @include pixel-text;
+                font-size: 12px;
+                color: $color-text-primary;
+
+                &.gold {
+                    color: $color-text-gold;
+                }
+
+                &.green {
+                    color: $color-accent;
+                }
+            }
+        }
+    }
+}
+
+.menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .btn-play {
+        font-size: 14px;
+        padding: 16px 24px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-logout {
+        font-size: 10px;
+        padding: 10px 20px;
+        text-align: center;
+    }
+}
+
+.leaderboard-card {
+    height: 100%;
+
+    .card-body {
+        padding: 10px 0 0 0;
+    }
+
+    .loading-text {
+        text-align: center;
+        padding: 20px 0;
+
+        p {
+            @include pixel-text;
+            font-size: 9px;
+            color: $color-text-secondary;
+            margin: 10px 0 0 0;
+        }
+    }
+
+    .empty-text {
+        @include pixel-text;
+        font-size: 9px;
+        color: $color-text-secondary;
+        text-align: center;
+        padding: 30px 0;
+    }
+
+    .leaderboard-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .leaderboard-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid $color-border;
+            transition: background 0.2s;
+
+            &.top-3 {
+                border-color: $color-text-gold;
+                background: rgba(255, 215, 0, 0.05);
+            }
+
+            &:hover {
+                background: rgba(0, 229, 255, 0.08);
+            }
+
+            .lb-rank {
+                @include pixel-text;
+                font-size: 10px;
+                color: $color-text-gold;
+                min-width: 40px;
+                display: flex;
+                align-items: center;
+            }
+
+            .lb-name {
+                @include pixel-text;
+                font-size: 9px;
+                color: $color-text-primary;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .lb-score {
+                @include pixel-text;
+                font-size: 10px;
+                color: $color-text-gold;
+                min-width: 70px;
+                text-align: right;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 4px;
+            }
+        }
+    }
+}
+
+.menu-footer {
+    margin-top: 30px;
+    animation: float-in 1s ease-out;
+
+    span {
+        @include pixel-text;
+        font-size: 7px;
+        color: $color-text-secondary-dark;
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-content {
+        flex-direction: column;
+    }
+
+    .menu-header .game-title {
+        font-size: 18px;
+    }
+
+    .menu-header .title-row {
+        gap: 10px;
+    }
+}

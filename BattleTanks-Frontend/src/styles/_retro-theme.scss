@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+// ── Color Palette (softer, more readable greens) ──
+$color-bg-dark: #0a0e14;
+$color-bg-panel: #141e28;
+$color-bg-panel-dark: #0c1219;
+$color-bg-panel-light: #1c2a38;
+$color-bg-input: #0a1218;
+$color-border: #2a4a3a;
+$color-border-light: #3d7a5a;
+$color-border-dark: #1e3628;
+$color-text-primary: #c8e6c9;
+$color-text-secondary: #a5d6a7;
+$color-text-secondary-dark: #66bb6a;
+$color-text-gold: #ffd700;
+$color-text-red: #ff6b6b;
+$color-text-yellow: #ffe066;
+$color-accent: #66bb6a;
+$color-accent-dark: #388e3c;
+$color-accent-darker: #1b5e20;
+$color-danger: #f44336;
+$color-warning: #ffc107;
+$color-info: #29b6f6;
+$color-glow: #00e5ff;
+
+// Mixins
+@mixin retro-border {
+  border: 3px solid $color-border;
+  box-shadow:
+    inset 2px 2px 0 $color-border-light,
+    inset -2px -2px 0 $color-border-dark,
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+@mixin pixel-text {
+  font-family: 'Press Start 2P', monospace;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+}
+
+@mixin retro-button {
+  @include pixel-text;
+  @include retro-border;
+  background: linear-gradient(180deg, $color-bg-panel 0%, $color-bg-panel-dark 100%);
+  color: $color-text-primary;
+  padding: 10px 20px;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.1s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+
+  &:hover {
+    background: linear-gradient(180deg, $color-bg-panel-light 0%, $color-bg-panel 100%);
+    transform: translate(-1px, -1px);
+    box-shadow:
+      inset 2px 2px 0 $color-border-light,
+      inset -2px -2px 0 $color-border-dark,
+      5px 5px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
+    box-shadow:
+      inset 2px 2px 0 $color-border-dark,
+      inset -2px -2px 0 $color-border-light,
+      2px 2px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+@mixin retro-input {
+  @include pixel-text;
+  font-size: 10px;
+  padding: 10px 14px;
+  background: $color-bg-input;
+  border: 2px solid $color-border;
+  color: $color-text-primary;
+  outline: none;
+
+  &::placeholder {
+    color: $color-text-secondary-dark;
+  }
+
+  &:focus {
+    border-color: $color-border-light;
+    box-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
+  }
+}
+
+@mixin retro-container {
+  background: $color-bg-dark;
+  background-image:
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  font-family: 'Press Start 2P', monospace;
+  min-height: 100vh;
+}
+
+@mixin retro-panel {
+  background: $color-bg-panel;
+  @include retro-border;
+  padding: 20px;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 229, 255, 0.3);
+  }
+
+  50% {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.6);
+  }
+}
+
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,60 @@
+config:
+  target: "ws://localhost:5013"
+  phases:
+    - duration: 10
+      arrivalRate: 10
+      name: "Warm-up"
+    - duration: 20
+      arrivalRate: 25
+      name: "Sustained Load"
+    - duration: 10
+      arrivalRate: 50
+      name: "Peak Load"
+  ws:
+    rejectUnauthorized: false
+
+scenarios:
+  - name: "SignalR Chat Events - 50 Clients"
+    engine: ws
+    flow:
+      - connect: "{{ target }}/game?roomId=artillery-room-1&playerId=device_{{ $uuid }}&playerName=Device{{ $uuid }}"
+      - send: '{"protocol":"json","version":1}\u001e'
+      - think: 1
+
+      - loop:
+          - send:
+              type: 1
+              target: "SendMessage"
+              arguments:
+                - Type: "CHAT_MESSAGE"
+                  Data:
+                    playerId: "device_{{ $uuid }}"
+                    playerName: "Device{{ $uuid }}"
+                    message: "Chat message from device"
+          - think: 0.5
+        count: 3
+
+      - loop:
+          - send:
+              type: 1
+              target: "SendMessage"
+              arguments:
+                - Type: "POWER_UP_SPAWNED"
+                  Data:
+                    id: "pu_{{ $uuid }}"
+                    x: 400
+                    y: 300
+                    type: "health"
+          - think: 0.5
+
+          - send:
+              type: 1
+              target: "SendMessage"
+              arguments:
+                - Type: "COLLECT_POWER_UP"
+                  Data:
+                    powerUpId: "pu_{{ $uuid }}"
+                    playerId: "device_{{ $uuid }}"
+                    type: "speed"
+          - think: 0.5
+        count: 3

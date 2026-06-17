@@ -1,0 +1,190 @@
+<div class="game-container">
+  <div class="player-panel">
+    <div class="panel-section player-info">
+      <span class="player-name">🎮 {{ playerName }}</span>
+      <span class="player-status" [class]="playerStatus">
+        @if (playerStatus === 'alive') {
+        🟢 Vivo
+        } @else if (playerStatus === 'wounded') {
+        🟡 Herido
+        } @else if (playerStatus === 'dead') {
+        🔴 Muerto
+        }
+      </span>
+    </div>
+
+    <div class="panel-section lives-section">
+      <span class="section-label">❤️ VIDAS</span>
+      <div class="hearts-container">
+        @for (hasLife of playerLives; track $index) {
+        <span class="heart" [class.empty]="!hasLife">
+          @if (hasLife) {
+          ❤️
+          } @else {
+          🖤
+          }
+        </span>
+        }
+      </div>
+    </div>
+
+    <div class="panel-section score-section">
+      <span class="section-label">🏆 PUNTUACIÓN</span>
+      <span class="score-value">{{ playerScore }}</span>
+    </div>
+
+    <div class="panel-section ammo-section">
+      <span class="section-label">🔫 MUNICIÓN</span>
+      <span class="ammo-value">{{ playerAmmo }}</span>
+    </div>
+
+    <div class="panel-section benchmark-section">
+      <span class="section-label">📊 BENCHMARK</span>
+      <span class="benchmark-value">{{ benchmarkSamples }} muestras</span>
+      <span class="benchmark-hint">Presiona B para ver reporte</span>
+    </div>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas #gameCanvas class="game-canvas"></canvas>
+
+    <div class="benchmark-overlay" *ngIf="showBenchmarkPanel">
+      <div class="benchmark-overlay-header">
+        <span>📊 REPORTE DE BENCHMARKING - SignalR</span>
+        <button class="benchmark-close-btn" (click)="closeBenchmarkPanel()">✕</button>
+      </div>
+      <div class="benchmark-overlay-body">
+        <div *ngIf="benchmarkReports.length === 0" class="benchmark-empty">
+          No hay muestras de latencia aún.<br>
+          Juega un poco (dispara, recoge power-ups) y vuelve a intentar.
+        </div>
+        <div *ngFor="let report of benchmarkReports" class="benchmark-event">
+          <div class="benchmark-event-name">{{ report.eventType }}</div>
+          <div class="benchmark-stat"><span>Muestras:</span> {{ report.sampleCount }}</div>
+          <div class="benchmark-stat"><span>Min:</span> {{ report.minLatency }}ms</div>
+          <div class="benchmark-stat"><span>Max:</span> {{ report.maxLatency }}ms</div>
+          <div class="benchmark-stat"><span>Avg:</span> {{ report.avgLatency }}ms</div>
+          <div class="benchmark-stat"><span>P95:</span> {{ report.p95Latency }}ms</div>
+        </div>
+        <div class="benchmark-footer">
+          <div>Protocolo: SignalR (WebSocket)</div>
+          <div>Transporte: WebSocket con reconexión automática</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notifications-container">
+      <div *ngFor="let notif of gameNotifications" class="notification-toast" [class.danger]="notif.type === 'danger'"
+        [class.success]="notif.type === 'success'" [class.info]="notif.type === 'info'">
+        {{ notif.message }}
+      </div>
+    </div>
+
+    @if (matchResult) {
+    <div class="match-result-overlay">
+      <div class="match-result-panel">
+        <h2 class="match-result-title">🏆 PARTIDA TERMINADA</h2>
+        <div class="winner-section">
+          <span class="winner-label">GANADOR</span>
+          <span class="winner-name">{{ matchResult.winnerName }}</span>
+        </div>
+        <div class="match-players-list">
+          @for (player of matchResult.players; track player.playerId) {
+          <div class="match-player-row" [class.winner]="player.isWinner">
+            <span class="match-player-name">
+              @if (player.isWinner) { 🏆 } @else { 💀 }
+              {{ player.playerName }}
+            </span>
+            <span class="match-player-status">
+              {{ player.isWinner ? 'VICTORIA' : 'ELIMINADO' }}
+            </span>
+          </div>
+          }
+        </div>
+        <div class="match-score-info">
+          <span>Tu puntuación: {{ playerScore }}</span>
+        </div>
+        <button class="btn-back-lobby" (click)="backToLobby()">
+          🚪 VOLVER AL MENÚ
+        </button>
+      </div>
+    </div>
+    }
+
+    @if (playerStatus === 'dead' && !matchResult) {
+    <div class="game-over-overlay">
+      <div class="game-over-panel">
+        <h2 class="game-over-title">💀 GAME OVER</h2>
+        <div class="game-over-score">
+          <span>Tu puntuación: {{ playerScore }}</span>
+        </div>
+        <div class="game-over-actions">
+          <button class="btn-back-lobby" (click)="restart()">
+            🔁 REINICIAR
+          </button>
+          <button class="btn-back-lobby" (click)="backToLobby()">
+            🚪 VOLVER AL MENÚ
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="controls-panel">
+    <div class="controls-info">
+      <div class="control-item">
+        <span class="key">W A S D</span>
+        <span class="action">Mover</span>
+      </div>
+      <div class="control-item">
+        <span class="key">ESPACIO</span>
+        <span class="action">Disparar</span>
+      </div>
+      <div class="control-item">
+        <span class="key">R</span>
+        <span class="action">Recargar</span>
+      </div>
+      <div class="control-item">
+        <span class="key">B</span>
+        <span class="action">Benchmark</span>
+      </div>
+    </div>
+
+    <div class="game-stats">
+      <div class="stat-item">
+        <span class="stat-label">Jugadores:</span>
+        <span class="stat-value">{{ activePlayers }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Power-ups:</span>
+        <span class="stat-value">{{ activePowerUps }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Estado:</span>
+        <span class="stat-value connection-status" [class.connected]="isConnected">
+          @if (isConnected) {
+          🟢 Conectado
+          } @else {
+          🔴 Desconectado
+          }
+        </span>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-action btn-damage" (click)="simulateDamage()">
+        💥 Simular Daño
+      </button>
+      <button class="btn-action btn-reload" (click)="reload()">
+        🔄 Recargar
+      </button>
+      <button class="btn-action btn-restart" (click)="restart()">
+        🔁 Reiniciar
+      </button>
+      <button class="btn-action btn-benchmark" (click)="showBenchmark()">
+        📊 Benchmark
+      </button>
+    </div>
+  </div>
+</div>

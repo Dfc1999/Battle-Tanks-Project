@@ -1,0 +1,371 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+$bg-dark: #0a0e14;
+$bg-panel: #141e28;
+$bg-panel-light: #1c2a38;
+$bg-input: #0a1218;
+$border-color: #2a4a3a;
+$border-light: #3d7a5a;
+$text-primary: #c8e6c9;
+$text-secondary: #a5d6a7;
+$text-gold: #ffd700;
+$accent: #66bb6a;
+$danger: #f44336;
+$warning: #ffc107;
+$glow: #00e5ff;
+$transition-speed: 0.2s;
+
+@mixin pixel-text {
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+}
+
+.lobby-container {
+    min-height: 100vh;
+    background: $bg-dark;
+    background-image:
+        linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.lobby-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.3);
+    color: $text-primary;
+    border-bottom: 3px solid $border-color;
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        h1 {
+            @include pixel-text;
+            margin: 0;
+            font-size: 1.4rem;
+            color: $text-gold;
+        }
+
+        .subtitle {
+            @include pixel-text;
+            font-size: 0.7rem;
+            color: $text-secondary;
+        }
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid $border-color;
+
+            .username {
+                @include pixel-text;
+                font-size: 0.7rem;
+                color: $text-primary;
+            }
+        }
+
+        .btn-logout {
+            font-size: 9px;
+            padding: 8px 14px;
+        }
+    }
+}
+
+.lobby-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.rooms-panel {
+    .panel-header-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+
+        .btn-sm {
+            font-size: 9px;
+            padding: 8px 14px;
+        }
+    }
+}
+
+.create-room-form {
+    margin-bottom: 20px;
+
+    h3 {
+        @include pixel-text;
+        margin: 0 0 15px 0;
+        color: $text-gold;
+        font-size: 0.9rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-top: 15px;
+
+        @media (max-width: 600px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .nes-field {
+        margin-bottom: 12px;
+
+        label {
+            @include pixel-text;
+            font-size: 8px;
+            color: $text-secondary;
+            margin-bottom: 6px;
+            display: block;
+        }
+    }
+
+    .btn-create-submit {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+}
+
+.error-message {
+    margin-bottom: 15px;
+    padding: 12px !important;
+    border-color: $danger !important;
+
+    .nes-text {
+        font-family: 'Press Start 2P', monospace;
+        font-size: 8px;
+    }
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+
+    p {
+        @include pixel-text;
+        margin-top: 15px;
+        font-size: 9px;
+        color: $text-secondary;
+    }
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+
+    p {
+        @include pixel-text;
+        color: $text-secondary;
+        font-size: 10px;
+        margin: 10px 0 0 0;
+    }
+
+    .hint {
+        font-size: 8px;
+        color: $text-gold;
+    }
+}
+
+.rooms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.room-card {
+    display: flex;
+    align-items: center;
+    padding: 12px !important;
+    cursor: pointer;
+    transition: all $transition-speed;
+
+    &:hover {
+        border-color: $glow !important;
+        box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+    }
+
+    &.selected {
+        border-color: $text-gold !important;
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+    }
+
+    &.full {
+        opacity: 0.6;
+    }
+
+    .room-info {
+        flex: 1;
+
+        .room-name {
+            @include pixel-text;
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            color: $text-primary;
+        }
+
+        .room-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.65rem;
+            color: $text-secondary;
+        }
+    }
+
+    .room-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+        margin-right: 15px;
+
+        .room-players {
+            @include pixel-text;
+            font-size: 0.75rem;
+            color: $text-primary;
+
+            &.full {
+                color: $danger;
+            }
+        }
+    }
+
+    .btn-join {
+        font-size: 9px;
+        padding: 8px 14px;
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}
+
+.details-panel {
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+
+    .detail-card {
+        h3 {
+            @include pixel-text;
+            margin: 0 0 15px 0;
+            color: $text-primary;
+            font-size: 0.9rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid $border-color;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba($border-color, 0.5);
+
+            .label {
+                @include pixel-text;
+                font-size: 8px;
+                color: $text-secondary;
+            }
+
+            .value {
+                @include pixel-text;
+                font-size: 8px;
+                color: $text-primary;
+
+                &.status-waiting {
+                    color: $warning;
+                }
+
+                &.status-playing {
+                    color: $accent;
+                }
+
+                &.status-finished {
+                    color: $danger;
+                }
+            }
+        }
+
+        .players-section {
+            margin-top: 15px;
+
+            h4 {
+                @include pixel-text;
+                margin: 0 0 10px 0;
+                color: $text-primary;
+                font-size: 0.75rem;
+            }
+
+            .nes-list {
+                padding-left: 20px;
+
+                li {
+                    @include pixel-text;
+                    font-size: 8px;
+                    padding: 6px 0;
+                    color: $text-primary;
+                }
+            }
+        }
+
+        .btn-join-large {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 11px;
+
+            &:disabled {
+                opacity: 0.5;
+            }
+        }
+    }
+}
